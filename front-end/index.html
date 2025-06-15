@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard de Candidatos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+ 
+    <aside class="sidebar">
+      <h2>Recrutador</h2>
+      <nav>
+        <ul>
+          <li><a href="#">Dashboard</a></li>
+          <li><a href="#">Candidatos</a></li>
+          <li><a href="#">Vagas</a></li>
+          <li><a href="#">Configurações</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    
+    <main class="main">
+      <header class="topbar">
+        <h1>Recomendação de Candidatos</h1>
+      </header>
+
+      <section class="dashboard">
+        <table>
+          <thead>
+
+            <tr>
+              <th>Nome</th>
+              <th>Experiência</th>
+              <th>Habilidades</th>
+              <th>Formação</th>
+              <th>Pontuação</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+            
+          </thead>
+          <tbody id="tabela-candidatos"></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

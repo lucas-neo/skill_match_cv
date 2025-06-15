@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Perfil do Candidato</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+    <a href="index.html">⬅ Voltar</a>
+    <h1>Perfil do Candidato</h1>
+
+    <div id="perfil">
+    </div>
+  </div>
+
+  <script>
+    const candidato = JSON.parse(localStorage.getItem("candidatoSelecionado"));
+
+    if (candidato) {
+      const div = document.getElementById("perfil");
+      div.innerHTML = `
+        <p><strong>Nome:</strong> ${candidato.nome}</p>
+        <p><strong>Experiência:</strong> ${candidato.experiencia} anos</p>
+        <p><strong>Habilidades:</strong> ${candidato.habilidades.join(", ")}</p>
+        <p><strong>Formação:</strong> ${candidato.formacao}</p>
+      `;
+    } else {
+      document.getElementById("perfil").innerHTML = '<p>Nenhum candidato selecionado.</p>';
+    }
+  </script>
+</body>
+</html>
