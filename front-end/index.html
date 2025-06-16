@@ -3,49 +3,153 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard de Candidatos</title>
+  <title>Skill Match CV - Sistema de Matching</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
- 
     <aside class="sidebar">
-      <h2>Recrutador</h2>
+      <h2>🎯 Skill Match</h2>
       <nav>
         <ul>
-          <li><a href="#">Dashboard</a></li>
-          <li><a href="#">Candidatos</a></li>
-          <li><a href="#">Vagas</a></li>
-          <li><a href="#">Configurações</a></li>
+          <li><a href="#" onclick="showSection('dashboard')" class="nav-active">🏠 Dashboard</a></li>
+          <li><a href="#" onclick="showSection('candidates')">👥 Candidatos</a></li>
+          <li><a href="#" onclick="showSection('jobs')">💼 Vagas</a></li>
+          <li><a href="#" onclick="showSection('matching')">🔍 Matching</a></li>
         </ul>
       </nav>
+      <div class="api-status">
+        <div id="api-status-indicator" class="status-offline"></div>
+        <span id="api-status-text">Verificando API...</span>
+      </div>
     </aside>
 
-    
     <main class="main">
-      <header class="topbar">
-        <h1>Recomendação de Candidatos</h1>
-      </header>
+      <!-- Dashboard Section -->
+      <section id="dashboard-section" class="section active">
+        <header class="topbar">
+          <h1>Dashboard - Visão Geral</h1>
+        </header>
+        <div class="dashboard">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <h3>Total de Candidatos</h3>
+              <div id="total-candidates" class="stat-number">-</div>
+            </div>
+            <div class="stat-card">
+              <h3>Total de Vagas</h3>
+              <div id="total-jobs" class="stat-number">-</div>
+            </div>
+            <div class="stat-card">
+              <h3>Matches Realizados</h3>
+              <div id="total-matches" class="stat-number">0</div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-      <section class="dashboard">
-        <table>
-          <thead>
+      <!-- Candidates Section -->
+      <section id="candidates-section" class="section">
+        <header class="topbar">
+          <h1>Gerenciar Candidatos</h1>
+          <button class="btn-primary" onclick="showAddCandidateModal()">+ Adicionar Candidato</button>
+        </header>
+        <div class="dashboard">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Email</th>
+                  <th>Localização</th>
+                  <th>Experiência</th>
+                  <th>Habilidades</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="candidates-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
 
-            <tr>
-              <th>Nome</th>
-              <th>Experiência</th>
-              <th>Habilidades</th>
-              <th>Formação</th>
-              <th>Pontuação</th>
-              <th>Status</th>
-              <th>Ações</th>
-            </tr>
-            
-          </thead>
-          <tbody id="tabela-candidatos"></tbody>
-        </table>
+      <!-- Jobs Section -->
+      <section id="jobs-section" class="section">
+        <header class="topbar">
+          <h1>Gerenciar Vagas</h1>
+          <button class="btn-primary" onclick="showAddJobModal()">+ Adicionar Vaga</button>
+        </header>
+        <div class="dashboard">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Título</th>
+                  <th>Localização</th>
+                  <th>Exp. Mínima</th>
+                  <th>Habilidades Requeridas</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="jobs-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Matching Section -->
+      <section id="matching-section" class="section">
+        <header class="topbar">
+          <h1>Sistema de Matching</h1>
+        </header>
+        <div class="dashboard">
+          <div class="matching-controls">
+            <select id="job-select">
+              <option value="">Selecione uma vaga...</option>
+            </select>
+            <button class="btn-primary" onclick="findMatches()">🔍 Buscar Matches</button>
+          </div>
+          <div id="matches-results" class="matches-container"></div>
+        </div>
       </section>
     </main>
+  </div>
+
+  <!-- Add Candidate Modal -->
+  <div id="add-candidate-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('add-candidate-modal')">&times;</span>
+      <h2>Adicionar Candidato</h2>
+      <form id="candidate-form" onsubmit="addCandidate(event)">
+        <input type="text" id="candidate-name" placeholder="Nome completo" required>
+        <input type="email" id="candidate-email" placeholder="Email" required>
+        <input type="text" id="candidate-location" placeholder="Localização" required>
+        <input type="number" id="candidate-experience" placeholder="Anos de experiência" min="0" required>
+        <input type="text" id="candidate-skills" placeholder="Habilidades (separadas por vírgula)" required>
+        <div class="form-actions">
+          <button type="button" onclick="closeModal('add-candidate-modal')" class="btn-secondary">Cancelar</button>
+          <button type="submit" class="btn-primary">Adicionar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Job Modal -->
+  <div id="add-job-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('add-job-modal')">&times;</span>
+      <h2>Adicionar Vaga</h2>
+      <form id="job-form" onsubmit="addJob(event)">
+        <input type="text" id="job-title" placeholder="Título da vaga" required>
+        <input type="text" id="job-location" placeholder="Localização" required>
+        <input type="number" id="job-min-experience" placeholder="Anos mínimos de experiência" min="0" required>
+        <input type="text" id="job-skills" placeholder="Habilidades requeridas (separadas por vírgula)" required>
+        <div class="form-actions">
+          <button type="button" onclick="closeModal('add-job-modal')" class="btn-secondary">Cancelar</button>
+          <button type="submit" class="btn-primary">Adicionar</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script src="script.js"></script>

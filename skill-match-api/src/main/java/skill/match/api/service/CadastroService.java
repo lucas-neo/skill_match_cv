@@ -31,13 +31,18 @@ public class CadastroService {
 
     @PostConstruct
     public void loadCache() {
-        // Carrega todos os candidatos do banco para o cache
-        StreamSupport.stream(candidatoRepository.findAll().spliterator(), false)
-                .forEach(candidato -> candidatosCache.put(candidato.getId(), candidato));
+        try {
+            // Carrega todos os candidatos do banco para o cache
+            StreamSupport.stream(candidatoRepository.findAll().spliterator(), false)
+                    .forEach(candidato -> candidatosCache.put(candidato.getId(), candidato));
 
-        // Carrega todas as vagas do banco para o cache
-        StreamSupport.stream(vagaRepository.findAll().spliterator(), false)
-                .forEach(vaga -> vagasCache.put(vaga.getId(), vaga));
+            // Carrega todas as vagas do banco para o cache
+            StreamSupport.stream(vagaRepository.findAll().spliterator(), false)
+                    .forEach(vaga -> vagasCache.put(vaga.getId(), vaga));
+        } catch (Exception e) {
+            // Se as tabelas não existirem ainda, apenas log o erro mas não falha
+            System.out.println("Warning: Could not load cache from database - tables may not exist yet: " + e.getMessage());
+        }
     }
 
     public Candidato addCandidato(Candidato candidato) {
